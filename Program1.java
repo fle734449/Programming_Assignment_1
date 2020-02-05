@@ -6,6 +6,7 @@
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.Queue;
 
 /**
  * Your solution goes in this class.
@@ -26,8 +27,36 @@ public class Program1 extends AbstractProgram1 {
      */
     @Override
     public boolean isStableMatching(Matching marriage) {
-        /* TODO implement this function */
-        return false; /* TODO remove this line */
+    	ArrayList<Integer> finalMatching = marriage.getEmployeeMatching();
+    	int n = finalMatching.size();
+    	
+    	//First type of instability
+        for(int i = 0; i < n; i++) {
+        	int location = finalMatching.get(i);
+        	for(int j = i+1; j < n; j++) {
+        		if(finalMatching.get(j).equals(-1)) {
+        			ArrayList<Integer> locationPref = marriage.getLocationPreference().get(location);
+        			if(locationPref.indexOf(j) < locationPref.indexOf(i)) {
+        				return false;
+        			}
+        		}
+        	}
+        }
+        
+        //Second type of instability
+        for(int i = 0; i < n; i++) {
+        	int locationOne = finalMatching.get(i);
+        	for(int j = i+1; j < n; j++) {
+        		int locationTwo = finalMatching.get(j);
+        		ArrayList<Integer> locationOnePref = marriage.getLocationPreference().get(locationOne);
+        		ArrayList<Integer> employeeTwoPref = marriage.getEmployeePreference().get(j);
+        		if((locationOnePref.indexOf(j) < locationOnePref.indexOf(i)) && (employeeTwoPref.indexOf(locationOne) < employeeTwoPref.indexOf(locationTwo))) {
+    				return false;
+    			}
+        	}
+        }
+        
+        return true; 
     }
 
 
@@ -39,7 +68,30 @@ public class Program1 extends AbstractProgram1 {
      */
     @Override
     public Matching stableMarriageGaleShapley_employeeoptimal(Matching marriage) {
-        /* TODO implement this function */
+        //Number of locations
+    	int numLocations = marriage.getLocationCount();
+    	
+    	//Number of employees
+        int numEmployees = marriage.getEmployeeCount();
+        
+        //Arrays of Men - Employees and Women - Locations
+        int[] employees = new int[numLocations];
+        int[] locations = new int[numEmployees];
+        for(int i = 0; i < numLocations; i++) {
+        	employees[i] = -1;
+        }
+        //Queue of free "men"
+        Queue<Integer> freeEmployees = new LinkedList();
+       
+        
+        //Number of proposals made by "men"
+        int[] count = new int[numEmployees];
+        for(int i = 0; i < numEmployees; i++) {
+        	freeEmployees.add(-1);
+        	count[i] = 0;
+        	locations[i] = -1;
+        }
+        
         return null; /* TODO remove this line */
     }
 
