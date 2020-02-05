@@ -1,6 +1,6 @@
 /*
- * Name: <your name>
- * EID: <your EID>
+ * Name: Frank Le
+ * EID: fpl227
  */
 
 import java.util.ArrayList;
