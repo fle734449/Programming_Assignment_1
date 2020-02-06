@@ -74,23 +74,36 @@ public class Program1 extends AbstractProgram1 {
     	//Number of employees
         int numEmployees = marriage.getEmployeeCount();
         
-        //Arrays of Men - Employees and Women - Locations
-        int[] employees = new int[numLocations];
-        int[] locations = new int[numEmployees];
+        //Arrays of Men = Employees and Women = Locations
+        int[] employees = new int[numEmployees];
+        int[] locations = new int[numLocations];
         for(int i = 0; i < numLocations; i++) {
-        	employees[i] = -1;
+        	locations[i] = -1;
         }
+        
         //Queue of free "men"
-        Queue<Integer> freeEmployees = new LinkedList();
+        Queue<Integer> freeEmployees = new LinkedList<Integer>();
        
+        //Inverse preference list for "women"
+        ArrayList<ArrayList<Integer>> invLocPref = new ArrayList<ArrayList<Integer>>();
         
         //Number of proposals made by "men"
         int[] count = new int[numEmployees];
+        
         for(int i = 0; i < numEmployees; i++) {
-        	freeEmployees.add(-1);
+        	employees[i] = -1;
+        	freeEmployees.add(i);
         	count[i] = 0;
-        	locations[i] = -1;
+        	/*
+        	for(int j = 0; j < numLocations; j++) {
+        		int rankEmployee = marriage.getEmployeePreference().get(i).get(j);
+        		invLocPref.get(i).set(rankEmployee, j);
+        	}
+        	*/
         }
+        
+        
+        
         
         return null; /* TODO remove this line */
     }
