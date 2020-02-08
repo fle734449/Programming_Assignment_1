@@ -29,30 +29,32 @@ public class Program1 extends AbstractProgram1 {
     public boolean isStableMatching(Matching marriage) {
     	ArrayList<Integer> finalMatching = marriage.getEmployeeMatching();
     	int n = finalMatching.size();
-    	
-    	//First type of instability
-        for(int i = 0; i < n; i++) {
-        	int location = finalMatching.get(i);
-        	for(int j = i+1; j < n; j++) {
-        		if(finalMatching.get(j).equals(-1)) {
-        			ArrayList<Integer> locationPref = marriage.getLocationPreference().get(location);
-        			if(locationPref.indexOf(j) < locationPref.indexOf(i)) {
-        				return false;
+        
+        for(int employeeOne = 0; employeeOne < n; employeeOne++) {
+        	int locationOne = finalMatching.get(employeeOne);
+        	if (locationOne != -1) {
+        		for(int employeeTwo = 0; employeeTwo < n; employeeTwo++) {
+        			if (employeeOne != employeeTwo) {
+        			int locationTwo = finalMatching.get(employeeTwo);
+        			
+        				//First Type of Instability
+        				if (locationTwo == -1) {
+        					ArrayList<Integer> locationPref = marriage.getLocationPreference().get(locationOne);
+        					if(locationPref.indexOf(employeeTwo) < locationPref.indexOf(employeeOne)) {
+        						return false;
+        					}
+        				} 
+        				//Second Type of Instability
+        				else {
+        					ArrayList<Integer> locationOnePref = marriage.getLocationPreference().get(locationOne);
+        					ArrayList<Integer> employeeTwoPref = marriage.getEmployeePreference().get(employeeTwo);
+        					if((locationOnePref.indexOf(employeeTwo) < locationOnePref.indexOf(employeeOne)) 
+        							&& (employeeTwoPref.indexOf(locationOne) < employeeTwoPref.indexOf(locationTwo))) {
+        						return false;
+        					}
+    					}
         			}
         		}
-        	}
-        }
-        
-        //Second type of instability
-        for(int i = 0; i < n; i++) {
-        	int locationOne = finalMatching.get(i);
-        	for(int j = i+1; j < n; j++) {
-        		int locationTwo = finalMatching.get(j);
-        		ArrayList<Integer> locationOnePref = marriage.getLocationPreference().get(locationOne);
-        		ArrayList<Integer> employeeTwoPref = marriage.getEmployeePreference().get(j);
-        		if((locationOnePref.indexOf(j) < locationOnePref.indexOf(i)) && (employeeTwoPref.indexOf(locationOne) < employeeTwoPref.indexOf(locationTwo))) {
-    				return false;
-    			}
         	}
         }
         
