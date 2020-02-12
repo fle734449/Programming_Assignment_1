@@ -110,7 +110,7 @@ public class Driver {
             System.out.printf("%s: stable? %s\n", "Gale-Shapley Location Optimal", isStable);
             System.out.println();
         }
-
+/*
         if (testGS_e) {
             Matching GSMatching = program.stableMarriageGaleShapley_employeeoptimal(problem);
             System.out.println(GSMatching);
@@ -118,6 +118,6 @@ public class Driver {
             System.out.printf("%s: stable? %s\n", "Gale-Shapley Employee Optimal", isStable);
             System.out.println();
         }
-
+*/
     }
 }
