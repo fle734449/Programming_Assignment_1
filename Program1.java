@@ -80,14 +80,16 @@ public class Program1 extends AbstractProgram1 {
         Queue<Integer> freeEmployees = new LinkedList<Integer>();
         
         //Inverse preference list for "women"
-        int[] invLocPref = new int[numLocations];
+        //int[] invLocPref = new int[numEmployees];
+        ArrayList<ArrayList<Integer>> invLocPref = new ArrayList<ArrayList<Integer>>();
         
         //Number of proposals made by "men"
         int[] count = new int[numEmployees];
         
         //Arrays of Men = Employees and Women = Locations
         int[] employees = new int[numEmployees];
-        int[] locations = new int[numLocations];
+        //int[] locations = new int[numLocations];
+        ArrayList<ArrayList<Integer>> locations = new ArrayList<ArrayList<Integer>>();
         ArrayList<Integer> location_slots = new ArrayList<Integer>();
 		location_slots = new ArrayList<Integer>(marriage.getLocationSlots()); 
         for(int i = 0; i < numEmployees; i++) {
@@ -98,20 +100,69 @@ public class Program1 extends AbstractProgram1 {
         }
 
         for(int i = 0; i < numLocations; i++) {
-        	locations[i] = -1;
+        	locations.add(new ArrayList<Integer>(location_slots.get(i)));
+        	for(int j = 0; j < location_slots.get(i); j++) {
+        		locations.get(i).add(-1);
+        	}
+        }
+        for(int i = 0; i < numLocations; i++) {
+        	//locations[i] = -1;
+        	invLocPref.add(new ArrayList<Integer>(numEmployees));
+        }
+        
+        for(int i = 0; i <numLocations; i++) {
         	for(int j = 0; j < numEmployees; j++) {
         		int rankEmployee = marriage.getLocationPreference().get(i).get(j);
-        		invLocPref[rankEmployee] =  j;
+        		invLocPref.get(rankEmployee).add(j);
         	}
         }
         
         while(freeEmployees.size() > 0) {
+        	int currentEmployee = freeEmployees.peek();
+        	if(count[currentEmployee] >= numLocations) {
+        		freeEmployees.remove();
+        		if (freeEmployees.size() <= 0) {
+        			break;
+        		}
+        		currentEmployee = freeEmployees.peek();
+        	}
+        	int currentLocation = marriage.getEmployeePreference().get(currentEmployee).get(count[currentEmployee]);
         	
+        	//if location is free
+        	//if(locations[currentLocation] == -1) {
+        	if(locations.get(currentLocation).contains(-1)) {
+        		employees[currentEmployee] = currentLocation;
+        		for(int i = 0; i < locations.get(currentLocation).size(); i++) {
+        			if(locations.get(currentLocation).get(i) == -1) {
+        				locations.get(currentLocation).set(i, currentEmployee);
+        			}
+        		}
+        		/*
+        		location_slots.set(currentLocation, location_slots.get(currentLocation)-1);
+        		if(location_slots.get(currentLocation) == 0) {
+        			locations[currentLocation] = currentEmployee;
+        			
+            	}
+            	*/
+        		freeEmployees.remove();
+        	}
+        	//if locations is not free
+        	else {
+        		/*if(invLocPref[currentEmployee] < invLocPref[locations[currentLocation]]) { */
+        		for(int i = 0; i <locations.get(currentLocation).size(); i++) {
+        		  if(invLocPref[currentEmployee] < invLocPref[locations.get(currentLocation).get(i)]) {
+        			int prevEmployee = locations.get(currentLocation).get(i);
+        			employees[prevEmployee] = -1;
+        			employees[currentEmployee] = currentLocation;
+        			locations.get(currentLocation).set(i, currentEmployee);
+        			freeEmployees.remove();
+        			freeEmployees.add(prevEmployee);
+        		  }
+        		}
+        	}
+        	count[currentEmployee] += 1;
         }
-        
-        
-        
-        
+
         ArrayList<Integer> matching = new ArrayList<Integer>();
     	for (int i = 0; i < employees.length; i++) {
     		matching.add(employees[i]);
@@ -138,7 +189,8 @@ public class Program1 extends AbstractProgram1 {
         Queue<Integer> freeLocations = new LinkedList<Integer>();
         
         //Inverse preference list for "women"
-        int[] invLocPref = new int[numEmployees];
+        //int[] invLocPref = new int[numLocations];
+        ArrayList<ArrayList<Integer>> invLocPref = new ArrayList<ArrayList<Integer>>();
         //Number of proposals made by "men"
         int[] count = new int[numLocations];
         
@@ -156,9 +208,12 @@ public class Program1 extends AbstractProgram1 {
 
         for(int i = 0; i < numEmployees; i++) {
         	employees[i] = -1;
+        	invLocPref.add(new ArrayList<Integer>(numLocations));
+        }
+        for(int i = 0; i < numEmployees; i++) {
         	for(int j = 0; j < numLocations; j++) {
         		int rankLocation = marriage.getEmployeePreference().get(i).get(j);
-        		invLocPref[rankLocation] =  j;
+        		invLocPref.get(rankLocation).add(j);
         	}
         }
         
@@ -181,8 +236,8 @@ public class Program1 extends AbstractProgram1 {
         	} 
         	//employee is not free
         	else {
-        		if(invLocPref[currentLocation] < 
-        				invLocPref[employees[currentEmployee]]) {
+        		if(invLocPref.get(currentEmployee).get(currentLocation) < 
+        				invLocPref.get(currentEmployee).get(employees[currentEmployee])) {
         			int prevLocation = employees[currentEmployee];
         			employees[currentEmployee] = currentLocation;
         			locations[currentLocation] = currentEmployee;
