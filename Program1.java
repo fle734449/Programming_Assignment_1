@@ -122,16 +122,13 @@ public class Program1 extends AbstractProgram1 {
         
         while(freeEmployees.size() > 0) {
         	int currentEmployee = freeEmployees.peek();
-        	while (count[currentEmployee] == numLocations) {
+        	if (count[currentEmployee] == numLocations) {
         		freeEmployees.remove();
         		if (freeEmployees.size() <= 0) {
         			break;
         		}
         		currentEmployee = freeEmployees.peek();
         	}
-        	if (freeEmployees.size() <= 0) {
-    			break;
-    		}
         	
         	int currentLocation = marriage.getEmployeePreference().get(currentEmployee).get(count[currentEmployee]);
         	
@@ -163,6 +160,7 @@ public class Program1 extends AbstractProgram1 {
         				  < invLocPref.get(currentLocation).get(locations.get(currentLocation).get(i))) {
         			int prevEmployee = locations.get(currentLocation).get(i);
         			employees[prevEmployee] = -1;
+        			count[prevEmployee] -= 1;
         			employees[currentEmployee] = currentLocation;
         			locations.get(currentLocation).set(i, currentEmployee);
         			freeEmployees.remove();
