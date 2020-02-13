@@ -251,6 +251,7 @@ public class Program1 extends AbstractProgram1 {
         		if(invLocPref.get(currentEmployee).get(currentLocation) < 
         				invLocPref.get(currentEmployee).get(employees[currentEmployee])) {
         			int prevLocation = employees[currentEmployee];
+        			location_slots.set(prevLocation, location_slots.get(prevLocation)+1);
         			employees[currentEmployee] = currentLocation;
         			locations[currentLocation] = currentEmployee;
         			freeLocations.remove();
