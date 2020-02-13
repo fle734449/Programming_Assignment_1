@@ -107,25 +107,32 @@ public class Program1 extends AbstractProgram1 {
         }
         for(int i = 0; i < numLocations; i++) {
         	//locations[i] = -1;
-        	invLocPref.add(new ArrayList<Integer>(numEmployees));
+        	invLocPref.add(new ArrayList<Integer>());
+        	for(int j = 0; j < numEmployees; j++) {
+        		invLocPref.get(i).add(0);
+        	}
         }
         
         for(int i = 0; i <numLocations; i++) {
         	for(int j = 0; j < numEmployees; j++) {
         		int rankEmployee = marriage.getLocationPreference().get(i).get(j);
-        		invLocPref.get(rankEmployee).add(j);
+        		invLocPref.get(i).set(rankEmployee, j);
         	}
         }
         
         while(freeEmployees.size() > 0) {
         	int currentEmployee = freeEmployees.peek();
-        	if(count[currentEmployee] >= numLocations) {
+        	while (count[currentEmployee] == numLocations) {
         		freeEmployees.remove();
         		if (freeEmployees.size() <= 0) {
         			break;
         		}
         		currentEmployee = freeEmployees.peek();
         	}
+        	if (freeEmployees.size() <= 0) {
+    			break;
+    		}
+        	
         	int currentLocation = marriage.getEmployeePreference().get(currentEmployee).get(count[currentEmployee]);
         	
         	//if location is free
@@ -135,6 +142,7 @@ public class Program1 extends AbstractProgram1 {
         		for(int i = 0; i < locations.get(currentLocation).size(); i++) {
         			if(locations.get(currentLocation).get(i) == -1) {
         				locations.get(currentLocation).set(i, currentEmployee);
+        				break;
         			}
         		}
         		/*
@@ -150,13 +158,16 @@ public class Program1 extends AbstractProgram1 {
         	else {
         		/*if(invLocPref[currentEmployee] < invLocPref[locations[currentLocation]]) { */
         		for(int i = 0; i <locations.get(currentLocation).size(); i++) {
-        		  if(invLocPref[currentEmployee] < invLocPref[locations.get(currentLocation).get(i)]) {
+        			
+        		  if(invLocPref.get(currentLocation).get(currentEmployee) 
+        				  < invLocPref.get(currentLocation).get(locations.get(currentLocation).get(i))) {
         			int prevEmployee = locations.get(currentLocation).get(i);
         			employees[prevEmployee] = -1;
         			employees[currentEmployee] = currentLocation;
         			locations.get(currentLocation).set(i, currentEmployee);
         			freeEmployees.remove();
         			freeEmployees.add(prevEmployee);
+        			break;
         		  }
         		}
         	}
@@ -207,13 +218,16 @@ public class Program1 extends AbstractProgram1 {
         }
 
         for(int i = 0; i < numEmployees; i++) {
-        	employees[i] = -1;
-        	invLocPref.add(new ArrayList<Integer>(numLocations));
+        	employees[i] = -1;  
+        	invLocPref.add(new ArrayList<Integer>());
+        	for(int j = 0; j < numLocations; j++) {
+        		invLocPref.get(i).add(0);
+        	}
         }
         for(int i = 0; i < numEmployees; i++) {
         	for(int j = 0; j < numLocations; j++) {
         		int rankLocation = marriage.getEmployeePreference().get(i).get(j);
-        		invLocPref.get(rankLocation).add(j);
+        		invLocPref.get(i).set(rankLocation, j);
         	}
         }
         
