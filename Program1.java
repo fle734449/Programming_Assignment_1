@@ -37,38 +37,41 @@ public class Program1 extends AbstractProgram1 {
         	int locationOne = finalMatching.get(employeeOne);
         	if (locationOne != -1) {
         		int numSlots = location_slots.get(locationOne);
+            	int count = 0;
         		matches++;
         		for(int employeeTwo = 0; employeeTwo < n; employeeTwo++) {
         			if (employeeOne != employeeTwo) {
         			int locationTwo = finalMatching.get(employeeTwo);
-        				
-        				//First Type of Instability
-        				if (locationTwo == -1) {
-        					ArrayList<Integer> locationPref = marriage.getLocationPreference().get(locationOne);
-        					if(locationPref.indexOf(employeeTwo) < locationPref.indexOf(employeeOne)) {
-        						return false;
-        					}
-        				} 
-        				//Second Type of Instability
-        				else {
-        					ArrayList<Integer> locationOnePref = marriage.getLocationPreference().get(locationOne);
-        					ArrayList<Integer> employeeTwoPref = marriage.getEmployeePreference().get(employeeTwo);
-        					if((locationOnePref.indexOf(employeeTwo) < locationOnePref.indexOf(employeeOne)) 
-        							&& (employeeTwoPref.indexOf(locationOne) < employeeTwoPref.indexOf(locationTwo))) {
-        						return false;
-        					}
-    					}
+        			if(locationOne == locationTwo) {
+        				count++;
         			}
+        			if(count > numSlots) {
+        				return false;
+        			}
+        			//First Type of Instability
+        			if (locationTwo == -1) {
+        				ArrayList<Integer> locationPref = marriage.getLocationPreference().get(locationOne);
+        				if(locationPref.indexOf(employeeTwo) < locationPref.indexOf(employeeOne)) {
+        					return false;
+        				}
+        			} 
+        			//Second Type of Instability
+        			else {
+        				ArrayList<Integer> locationOnePref = marriage.getLocationPreference().get(locationOne);
+        				ArrayList<Integer> employeeTwoPref = marriage.getEmployeePreference().get(employeeTwo);
+        				if((locationOnePref.indexOf(employeeTwo) < locationOnePref.indexOf(employeeOne)) 
+        						&& (employeeTwoPref.indexOf(locationOne) < employeeTwoPref.indexOf(locationTwo))) {
+        					return false;
+        				}
+    				}
         		}
         	}
         }
-        
-        if(matches != marriage.totalLocationSlots()) {
-        	return false;
-        }
-        
-        
-        return true; 
+      }
+      if(matches != marriage.totalLocationSlots()) {
+        return false;
+      }
+      return true; 
     }
 
 
