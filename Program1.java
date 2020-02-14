@@ -171,8 +171,7 @@ public class Program1 extends AbstractProgram1 {
         	//if locations is not free
         	else {
         		/*if(invLocPref[currentEmployee] < invLocPref[locations[currentLocation]]) { */
-        		for(int i = 0; i <locations.get(currentLocation).size(); i++) {
-        			
+        		for(int i = 0; i <locations.get(currentLocation).size(); i++) {        			
         		  if(invLocPref.get(currentLocation).get(currentEmployee) 
         				  < invLocPref.get(currentLocation).get(locations.get(currentLocation).get(i))) {
         			int prevEmployee = locations.get(currentLocation).get(i);
@@ -227,8 +226,10 @@ public class Program1 extends AbstractProgram1 {
 		location_slots = new ArrayList<Integer>(marriage.getLocationSlots()); 
         for(int i = 0; i < numLocations; i++) {
         	locations[i] = -1;
-        	freeLocations.add(i);
         	count[i] = 0;
+        	for(int j = 0; j < location_slots.get(i); j ++) {
+        		freeLocations.add(i);
+        	}
         	
         }
 
@@ -248,13 +249,6 @@ public class Program1 extends AbstractProgram1 {
         
         while(freeLocations.size() > 0) {
         	int currentLocation = freeLocations.peek();
-        	if(location_slots.get(currentLocation) == 0) {
-        		freeLocations.remove();
-        		if (freeLocations.size() <= 0) {
-        			break;
-        		}
-        		currentLocation = freeLocations.peek();
-        	}
 
         	int currentEmployee = marriage.getLocationPreference().get(currentLocation).get(count[currentLocation]);
 
@@ -262,20 +256,17 @@ public class Program1 extends AbstractProgram1 {
         	if(employees[currentEmployee] == -1) {
         		employees[currentEmployee] = currentLocation;
         		locations[currentLocation] = currentEmployee;
-        		location_slots.set(currentLocation, location_slots.get(currentLocation)-1);
+        		freeLocations.remove();
         	} 
         	//employee is not free
         	else {
         		if(invEmpPref.get(currentEmployee).get(currentLocation) < 
         				invEmpPref.get(currentEmployee).get(employees[currentEmployee])) {
         			int prevLocation = employees[currentEmployee];
-        			location_slots.set(currentLocation, location_slots.get(currentLocation)-1);
-        			location_slots.set(prevLocation, location_slots.get(prevLocation)+1);
         			employees[currentEmployee] = currentLocation;
         			locations[currentLocation] = currentEmployee;
-        			if(!freeLocations.contains(prevLocation)) {
-        				freeLocations.add(prevLocation);
-        			}
+        			freeLocations.remove();
+        			freeLocations.add(prevLocation);
         		}
         			
         	}
