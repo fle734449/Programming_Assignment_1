@@ -33,6 +33,10 @@ public class Program1 extends AbstractProgram1 {
         ArrayList<Integer> location_slots = new ArrayList<Integer>();
 		location_slots = new ArrayList<Integer>(marriage.getLocationSlots()); 
 		
+		if(marriage.getEmployeeMatching() == null) {
+			return false;
+		}
+		
         for(int employeeOne = 0; employeeOne < n; employeeOne++) {
         	int locationOne = finalMatching.get(employeeOne);
         	if (locationOne != -1) {
