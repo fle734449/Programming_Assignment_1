@@ -29,14 +29,19 @@ public class Program1 extends AbstractProgram1 {
     public boolean isStableMatching(Matching marriage) {
     	ArrayList<Integer> finalMatching = marriage.getEmployeeMatching();
     	int n = finalMatching.size();
-        
+        int matches = 0;
+        ArrayList<Integer> location_slots = new ArrayList<Integer>();
+		location_slots = new ArrayList<Integer>(marriage.getLocationSlots()); 
+		
         for(int employeeOne = 0; employeeOne < n; employeeOne++) {
         	int locationOne = finalMatching.get(employeeOne);
         	if (locationOne != -1) {
+        		int numSlots = location_slots.get(locationOne);
+        		matches++;
         		for(int employeeTwo = 0; employeeTwo < n; employeeTwo++) {
         			if (employeeOne != employeeTwo) {
         			int locationTwo = finalMatching.get(employeeTwo);
-        			
+        				
         				//First Type of Instability
         				if (locationTwo == -1) {
         					ArrayList<Integer> locationPref = marriage.getLocationPreference().get(locationOne);
@@ -57,6 +62,11 @@ public class Program1 extends AbstractProgram1 {
         		}
         	}
         }
+        
+        if(matches != marriage.totalLocationSlots()) {
+        	return false;
+        }
+        
         
         return true; 
     }
@@ -199,7 +209,7 @@ public class Program1 extends AbstractProgram1 {
         
         //Inverse preference list for "women"
         //int[] invLocPref = new int[numLocations];
-        ArrayList<ArrayList<Integer>> invLocPref = new ArrayList<ArrayList<Integer>>();
+        ArrayList<ArrayList<Integer>> invEmpPref = new ArrayList<ArrayList<Integer>>();
         //Number of proposals made by "men"
         int[] count = new int[numLocations];
         
@@ -217,15 +227,15 @@ public class Program1 extends AbstractProgram1 {
 
         for(int i = 0; i < numEmployees; i++) {
         	employees[i] = -1;  
-        	invLocPref.add(new ArrayList<Integer>());
+        	invEmpPref.add(new ArrayList<Integer>());
         	for(int j = 0; j < numLocations; j++) {
-        		invLocPref.get(i).add(0);
+        		invEmpPref.get(i).add(0);
         	}
         }
         for(int i = 0; i < numEmployees; i++) {
         	for(int j = 0; j < numLocations; j++) {
         		int rankLocation = marriage.getEmployeePreference().get(i).get(j);
-        		invLocPref.get(i).set(rankLocation, j);
+        		invEmpPref.get(i).set(rankLocation, j);
         	}
         }
         
@@ -238,6 +248,7 @@ public class Program1 extends AbstractProgram1 {
         		}
         		currentLocation = freeLocations.peek();
         	}
+
         	int currentEmployee = marriage.getLocationPreference().get(currentLocation).get(count[currentLocation]);
 
         	//if employee is free
@@ -248,14 +259,16 @@ public class Program1 extends AbstractProgram1 {
         	} 
         	//employee is not free
         	else {
-        		if(invLocPref.get(currentEmployee).get(currentLocation) < 
-        				invLocPref.get(currentEmployee).get(employees[currentEmployee])) {
+        		if(invEmpPref.get(currentEmployee).get(currentLocation) < 
+        				invEmpPref.get(currentEmployee).get(employees[currentEmployee])) {
         			int prevLocation = employees[currentEmployee];
+        			location_slots.set(currentLocation, location_slots.get(currentLocation)-1);
         			location_slots.set(prevLocation, location_slots.get(prevLocation)+1);
         			employees[currentEmployee] = currentLocation;
         			locations[currentLocation] = currentEmployee;
-        			freeLocations.remove();
-        			freeLocations.add(prevLocation);
+        			if(!freeLocations.contains(prevLocation)) {
+        				freeLocations.add(prevLocation);
+        			}
         		}
         			
         	}
